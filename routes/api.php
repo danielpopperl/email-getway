@@ -14,7 +14,7 @@ Route::group([
 
 ], function ($router) {
 
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
@@ -25,7 +25,7 @@ Route::group([
 //Sensedia Requests
 Route::group([
 
-    'middleware' => 'auth:api',
+    'middleware' => ['auth'],
     'prefix' => 'email'
 
 ], function() {

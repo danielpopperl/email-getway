@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/errorApi', function () {
+    return response()->json(['msg' => 'error'], 401);
+})->name('errorApi');

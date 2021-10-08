@@ -2,46 +2,60 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\Handler;
-use App\Http\Controllers\Api\ApiError;
+use App\Http\Requests\SensediaSendRequest;
 use App\Models\Sensedia;
-use Illuminate\Http\Request;
-use App\Http\Controllers\MktCloudRestApi;
+use App\Repositories\MktCloudRestApi;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class SensediasController extends Controller
 {
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function send(Request $request)
+    public function send(SensediaSendRequest $request)
     {
+        // INSERT into database before validation
+        $row = Sensedia::create([
+            'id_empresa'        => $request->id_empresa,
+            'id_template'       => $request->id_template,
+            'id_unidade'        => $request->id_unidade,
+            'nome_cliente'      => $request->nome_cliente,
+            'cpf_cnpj_campo'    => $request->cpf_cnpj_campo,
+            'email'             => $request->email,
+            'request_json'      => $request->all(),
+            'status'            => '0'
+        ]);
 
-        //GET MKT Cloud Token
-        $requestApiToken = new MktCloudRestApi;
+        // GET insert ID
+        $rowId = $row->id;
 
-        $header = array(
-            'Content-Type' => 'application/json',
-        );
+        // Retrieve the validated input data
+        $request->validated();
 
-        $sensedia = $request;
+        // GET Business ID from Request
+        $businessId = $request->id_unidade;
 
-        //GET Business ID and find APIEVENT
-        $businessId = $sensedia->id_unidade;
-        $apiEvent = Sensedia::UNIDADE_NEGOCIO[$businessId];
-        Log::info("$apiEvent");
+        // CHECK template ID
+        $templateId = $request->id_template;
+
+        Log::info(Sensedia::APIEvent($templateId, Sensedia::setBusinessId($businessId)));
         exit();
 
-        $request = Http::withHeaders($header)
-            ->withToken($requestApiToken->RequestApi())
-            ->post(config('services.mkt_cloud.link_entry_journey'), [
-                "contactKey" => "expert_sender",
-                "EventDefinitionKey" => '"' . $apiEvent . '"', // $apiEvent
-                "Data" => $sensedia->all()
-            ]);
+        try {
+
+            $request = Http::withToken(MktCloudRestApi::RequestApi())
+                ->post(config('services.mkt_cloud.link_entry_journey'), [
+                    "contactKey" => "expert_sender",
+                    "EventDefinitionKey" => '"' . Sensedia::APIEvent($templateId, Sensedia::setBusinessId($businessId)) . '"',
+                    "Data" => $request->all()
+                ]);
+
+        } catch (\Exception $e) {
+            Log::info($e);
+
+            // SAVE status 2 if ERROR
+            $record = Sensedia::find($rowId);
+            $record->status = '2';
+            $record->save();
+        }
     }
 }
