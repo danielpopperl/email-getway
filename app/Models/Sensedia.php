@@ -38,6 +38,7 @@ class Sensedia extends Model
         'urlapoliceseguro',
         'urlcadastropositivo',
         'urlpagamento',
+        'urlregulamento',
         'urlpi',
         'urlproposta',
         'valor_cartao',
@@ -238,7 +239,8 @@ class Sensedia extends Model
 
 
 
-    public static function APIEvent($templateId, $businessId){
+    public static function APIEvent($templateId, $businessId)
+    {
 
         $tDownloadBoleto = ['1292'];
         if (in_array($templateId, $tDownloadBoleto)) $apiEvent = Sensedia::DOWNLOAD_BOLETO[$businessId];
@@ -295,7 +297,8 @@ class Sensedia extends Model
         return $apiEvent;
     }
 
-    public static function setBusinessId($bId){
+    public static function setBusinessId($bId)
+    {
         $arrayBusinessId = ['4', '5', '30', '32'];
 
         if (in_array($bId, $arrayBusinessId)) {
@@ -304,24 +307,24 @@ class Sensedia extends Model
         
         return '999';
 
-        // '4'     => '',  // RENAULT
-        // '5'     => '',  // NISSAN
-        // '30'    => '',  // STARA
-        // '32'	=> ''   // CONSORCIO UP
+        // '4'    // RENAULT
+        // '5'    // NISSAN
+        // '30'   // STARA
+        // '32'   // CONSORCIO UP
 
         // Unidades - BU Parceria
-        // '1'  => '', // EMBRACON
-        // '6'	=> '', // SICOOB SC
-        // '16' => '', // CHERY
-        // '31'	=> '', // BANESE
-        // '33'	=> '', // BANESTES
-        // '36'	=> '', // PRIMACREDI
-        // '37'	=> '', // CONSORCIO PAN
-        // '40'	=> '', // MULTICREDI
-        // '41'	=> '', // EDANBANK
-        // '42'	=> '', // CRESOL
-        // '43'	=> '', // UNIDAS
-        // '44'	=> '', // AGIBANK
-        // '45'	=> '', // TESLA
+        // '1'   // EMBRACON
+        // '6'   // SICOOB SC
+        // '16'  // CHERY
+        // '31'  // BANESE
+        // '33'  // BANESTES
+        // '36'  // PRIMACREDI
+        // '37'  // CONSORCIO PAN
+        // '40'  // MULTICREDI
+        // '41'  // EDANBANK
+        // '42'  // CRESOL
+        // '43'  // UNIDAS
+        // '44'  // AGIBANK
+        // '45'  // TESLA
     }
 }

@@ -32,7 +32,17 @@ class SensediaSendRequest extends FormRequest
     public function rules()
     {
         return [
-            'id_unidade' => 'required|integer'
+            'id_unidade' => 'required|integer',
+            'id_empresa' => 'required|integer',
+            'id_template' => 'required|integer',
+            'email' => 'required|email',
+            'urladitamento' => 'sometimes|url',
+            'urlapoliceseguro' => 'sometimes|url',
+            'urlcadastropositivo' => 'sometimes|url',
+            'urlpagamento' => 'sometimes|url',
+            'urlregulamento' => 'sometimes|url',
+            'urlpi' => 'sometimes|url',
+            'urlproposta' => 'sometimes|url'
         ];
     }
 }
